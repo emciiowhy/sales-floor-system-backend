@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173','https://sales-floor-system-frontend-68yiysley-emciiowhys-projects.vercel.app',
   credentials: true
 }));
 app.use(express.json());
