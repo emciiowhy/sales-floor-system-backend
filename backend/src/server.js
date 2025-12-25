@@ -6,6 +6,7 @@ import passUpRoutes from './routes/passups.js';
 import leaderboardRoutes from './routes/leaderboard.js';
 import stockRoutes from './routes/stock.js';
 import breakRoutes from './routes/breaks.js';
+import breakScheduleRoutes from './routes/breakSchedules.js';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use('/api/passups', passUpRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/stock', stockRoutes);
 app.use('/api/breaks', breakRoutes);
+app.use('/api/break-schedules', breakScheduleRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
