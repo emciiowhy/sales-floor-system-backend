@@ -69,8 +69,12 @@ router.patch('/:id', async (req, res) => {
     res.json(agent);
   } catch (error) {
     console.error('Error updating agent:', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Agent not found' });
+    }
     res.status(500).json({ error: 'Failed to update agent' });
   }
 });
 
 export default router;
+
