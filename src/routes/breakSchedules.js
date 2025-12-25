@@ -70,7 +70,7 @@ router.get('/agent/:agentId', async (req, res) => {
             lunchTime: '05:00',
             endOfShift: '06:30',
             alarmEnabled: true,
-            alarmVolume: 70
+            alarmVolume: 100
           }
         });
       } catch (createError) {
@@ -126,7 +126,7 @@ router.put('/agent/:agentId', async (req, res) => {
         lunchTime: lunchTime || '05:00',
         endOfShift: endOfShift || '06:30',
         alarmEnabled: alarmEnabled !== undefined ? alarmEnabled : true,
-        alarmVolume: alarmVolume !== undefined ? alarmVolume : 70
+        alarmVolume: alarmVolume !== undefined ? alarmVolume : 100
       }
     });
 
