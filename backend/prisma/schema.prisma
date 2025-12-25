@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  passUps       PassUp[]
+  breaks        Break[]
+  customScript  String?  @db.Text
+}
+
+model PassUp {
+  id            String   @id @default(cuid())
+  agentId       String
+  agent         Agent    @relation(fields: [agentId], references: [id])
+  
+  date          DateTime @default(now())
+  ticker        String
+  tickerPrice   String?
+  leadName      String
+  interestedIn  String
+  agreedToSMS   Boolean
+  disposition   String
+  
+  rebuttals     Json
+  notes         String?  @db.Text
+  
+  createdAt     DateTime @default(now())
+  
+  @@index([agentId, date])
+  @@index([disposition])
+  @@index([date])
+}
+
+model Break {
+  id        String   @id @default(cuid())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  
+  type      String
+  startTime DateTime
+  endTime   DateTime?
+  missed    Boolean  @default(false)
+  
+  @@index([agentId, startTime])
+}
+
+model GlobalScript {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  version   Int      @default(1)
+  updatedAt DateTime @updatedAt
+}
+
