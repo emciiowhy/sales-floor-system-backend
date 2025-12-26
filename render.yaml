@@ -2,8 +2,9 @@ services:
   - type: web
     name: sales-floor-backend
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    dir: backend
+    buildCommand: npm install
+    startCommand: node src/server.js
     envVars:
       - key: NODE_ENV
         value: production
