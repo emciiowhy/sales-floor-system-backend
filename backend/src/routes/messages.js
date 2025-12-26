@@ -17,18 +17,16 @@ router.get('/', async (req, res) => {
           }
         }
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: 'asc' },
       take: parseInt(limit),
       skip: parseInt(offset)
     });
 
-    // Reverse to show oldest first
-    const sortedMessages = messages.reverse();
-
-    res.json(sortedMessages);
+    console.log(`[MESSAGES] Fetched ${messages.length} messages`);
+    res.json({ messages });
   } catch (error) {
-    console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Failed to fetch messages' });
+    console.error('[ERROR] Error fetching messages:', error);
+    res.status(500).json({ error: 'Failed to fetch messages', messages: [] });
   }
 });
 
@@ -53,10 +51,11 @@ router.get('/recent', async (req, res) => {
       orderBy: { createdAt: 'asc' }
     });
 
-    res.json(messages);
+    console.log(`[MESSAGES/RECENT] Fetched ${messages.length} recent messages since ${sinceDate.toISOString()}`);
+    res.json({ messages });
   } catch (error) {
-    console.error('Error fetching recent messages:', error);
-    res.status(500).json({ error: 'Failed to fetch recent messages' });
+    console.error('[ERROR] Error fetching recent messages:', error);
+    res.status(500).json({ error: 'Failed to fetch recent messages', messages: [] });
   }
 });
 
@@ -98,7 +97,7 @@ router.post('/', async (req, res) => {
     });
 
     console.log(`[MESSAGE] New message from ${agent.name}: ${content.substring(0, 50)}`);
-    res.status(201).json(message);
+    res.status(201).json({ message });
   } catch (error) {
     console.error('Error creating message:', error);
     res.status(500).json({ error: 'Failed to create message' });
