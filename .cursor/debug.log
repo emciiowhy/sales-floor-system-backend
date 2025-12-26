@@ -1448,3 +1448,12 @@
 {"location":"prisma.js:6","message":"Before PrismaClient init","data":{},"timestamp":1766773561672,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"prisma.js:10","message":"After PrismaClient init","data":{"prismaExists":true,"hasAgent":true,"hasBreakSchedule":true},"timestamp":1766773561680,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"server.js:73","message":"Registering break-schedules route","data":{"routePath":"/api/break-schedules","breakScheduleRoutesExists":true},"timestamp":1766773561690,"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}
+{"location":"prisma.js:6","message":"Before PrismaClient init","data":{},"timestamp":1766773646238,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"prisma.js:10","message":"After PrismaClient init","data":{"prismaExists":true,"hasAgent":true,"hasBreakSchedule":true},"timestamp":1766773646250,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"server.js:73","message":"Registering break-schedules route","data":{"routePath":"/api/break-schedules","breakScheduleRoutesExists":true},"timestamp":1766773646263,"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}
+{"location":"prisma.js:6","message":"Before PrismaClient init","data":{},"timestamp":1766773728043,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"prisma.js:10","message":"After PrismaClient init","data":{"prismaExists":true,"hasAgent":true,"hasBreakSchedule":true},"timestamp":1766773728054,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"server.js:73","message":"Registering break-schedules route","data":{"routePath":"/api/break-schedules","breakScheduleRoutesExists":true},"timestamp":1766773728067,"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}
+{"location":"prisma.js:6","message":"Before PrismaClient init","data":{},"timestamp":1766773835515,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"prisma.js:10","message":"After PrismaClient init","data":{"prismaExists":true,"hasAgent":true,"hasBreakSchedule":true},"timestamp":1766773835525,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"server.js:73","message":"Registering break-schedules route","data":{"routePath":"/api/break-schedules","breakScheduleRoutesExists":true},"timestamp":1766773835537,"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}
