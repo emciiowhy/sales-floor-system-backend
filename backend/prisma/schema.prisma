@@ -16,6 +16,7 @@ model Agent {
   passUps       PassUp[]
   breaks        Break[]
   breakSchedule BreakSchedule?
+  messages      Message[]
   customScript  String?  @db.Text
 }
 
@@ -82,5 +83,17 @@ model BreakSchedule {
   
   @@unique([agentId])
   @@index([agentId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  
+  @@index([agentId])
+  @@index([createdAt])
 }
 

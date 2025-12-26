@@ -4,18 +4,28 @@ import prisma from '../utils/prisma.js';
 const router = express.Router();
 
 // Get today's breaks for an agent (must be before /:id route)
+// Shift starts at 9:30 PM (21:30) and resets each day at 9:30 PM
 router.get('/agent/:agentId/today', async (req, res) => {
   try {
     const { agentId } = req.params;
     
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Calculate current shift start time (9:30 PM)
+    // If current time is before 9:30 PM today, shift started yesterday at 9:30 PM
+    // If current time is after 9:30 PM today, shift started today at 9:30 PM
+    const now = new Date();
+    const shiftStart = new Date(now);
+    shiftStart.setHours(21, 30, 0, 0); // 9:30 PM
+    
+    // If it's before 9:30 PM today, the shift started yesterday at 9:30 PM
+    if (now < shiftStart) {
+      shiftStart.setDate(shiftStart.getDate() - 1);
+    }
 
     const breaks = await prisma.break.findMany({
       where: {
         agentId,
         startTime: {
-          gte: today
+          gte: shiftStart
         }
       },
       orderBy: {
@@ -23,14 +33,16 @@ router.get('/agent/:agentId/today', async (req, res) => {
       }
     });
 
-    // Calculate bio break usage
+    // Calculate bio break usage for current shift
     const bioBreaks = breaks.filter(b => b.type === 'BIO');
     const bioMinutesUsed = bioBreaks.reduce((total, breakRecord) => {
       if (breakRecord.endTime) {
         const duration = (breakRecord.endTime - breakRecord.startTime) / 1000 / 60;
         return total + duration;
       }
-      return total;
+      // If break is still active, count elapsed time
+      const elapsed = (now - breakRecord.startTime) / 1000 / 60;
+      return total + elapsed;
     }, 0);
 
     res.json({

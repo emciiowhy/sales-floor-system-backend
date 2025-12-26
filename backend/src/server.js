@@ -8,6 +8,7 @@ import leaderboardRoutes from './routes/leaderboard.js';
 import stockRoutes from './routes/stock.js';
 import breakRoutes from './routes/breaks.js';
 import breakScheduleRoutes from './routes/breakSchedules.js';
+import messageRoutes from './routes/messages.js';
 
 // Fixed: Ensured DELETE and PATCH routes for pass-ups are properly registered
 
@@ -70,6 +71,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/agents', agentRoutes);
 app.use('/api/passups', passUpRoutes);
+app.use('/api/messages', messageRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/stock', stockRoutes);
 app.use('/api/breaks', breakRoutes);

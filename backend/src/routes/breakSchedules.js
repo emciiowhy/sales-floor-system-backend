@@ -65,12 +65,12 @@ router.get('/agent/:agentId', async (req, res) => {
         schedule = await prisma.breakSchedule.create({
           data: {
             agentId,
-            firstBreak: '10:00',
-            secondBreak: '14:00',
-            lunchTime: '12:30',
-            endOfShift: '17:00',
+            firstBreak: '01:00',
+            secondBreak: '03:00',
+            lunchTime: '05:00',
+            endOfShift: '06:30',
             alarmEnabled: true,
-            alarmVolume: 70
+            alarmVolume: 100
           }
         });
       } catch (createError) {
@@ -121,12 +121,12 @@ router.put('/agent/:agentId', async (req, res) => {
       },
       create: {
         agentId,
-        firstBreak: firstBreak || '10:00',
-        secondBreak: secondBreak || '14:00',
-        lunchTime: lunchTime || '12:30',
-        endOfShift: endOfShift || '17:00',
+        firstBreak: firstBreak || '01:00',
+        secondBreak: secondBreak || '03:00',
+        lunchTime: lunchTime || '05:00',
+        endOfShift: endOfShift || '06:30',
         alarmEnabled: alarmEnabled !== undefined ? alarmEnabled : true,
-        alarmVolume: alarmVolume !== undefined ? alarmVolume : 70
+        alarmVolume: alarmVolume !== undefined ? alarmVolume : 100
       }
     });
 
