@@ -49,6 +49,67 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Get agent stats - MORE SPECIFIC, must come before /agent/:agentId
+router.get('/agent/:agentId/stats', async (req, res) => {
+  try {
+    const { agentId } = req.params;
+    const { period = 'daily' } = req.query;
+
+    const now = new Date();
+    let startDate;
+
+    switch (period) {
+      case 'daily':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        break;
+      case 'weekly':
+        const dayOfWeek = now.getDay();
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - dayOfWeek);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'monthly':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    const passUps = await prisma.passUp.findMany({
+      where: {
+        agentId,
+        date: { gte: startDate }
+      }
+    });
+
+    const stats = {
+      hot: passUps.filter(p => p.disposition === 'HOT').length,
+      warm: passUps.filter(p => p.disposition === 'WARM').length,
+      int: passUps.filter(p => p.disposition === 'INT').length,
+      tihu: passUps.filter(p => p.disposition === 'TIHU').length,
+      wsmsnt: passUps.filter(p => p.disposition === 'WSMSNT').length,
+      total: passUps.length
+    };
+
+    const productive = stats.hot + stats.warm + stats.int;
+    const productiveGoal = period === 'daily' ? 8 : period === 'weekly' ? 40 : 100;
+    const totalGoal = period === 'daily' ? 10 : period === 'weekly' ? 50 : 120;
+
+    stats.targetProgress = {
+      productive,
+      productiveGoal,
+      totalGoal,
+      productivePercent: Math.round((productive / productiveGoal) * 100),
+      totalPercent: Math.round((stats.total / totalGoal) * 100)
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
 // Get agent's pass-ups with date filtering
 router.get('/agent/:agentId', async (req, res) => {
   try {
@@ -161,67 +222,6 @@ router.patch('/:passUpId', async (req, res) => {
   } catch (error) {
     console.error('Error updating pass-up:', error);
     res.status(500).json({ error: 'Failed to update pass-up' });
-  }
-});
-
-// Get agent stats
-router.get('/agent/:agentId/stats', async (req, res) => {
-  try {
-    const { agentId } = req.params;
-    const { period = 'daily' } = req.query;
-
-    const now = new Date();
-    let startDate;
-
-    switch (period) {
-      case 'daily':
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        break;
-      case 'weekly':
-        const dayOfWeek = now.getDay();
-        startDate = new Date(now);
-        startDate.setDate(now.getDate() - dayOfWeek);
-        startDate.setHours(0, 0, 0, 0);
-        break;
-      case 'monthly':
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        break;
-      default:
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    }
-
-    const passUps = await prisma.passUp.findMany({
-      where: {
-        agentId,
-        date: { gte: startDate }
-      }
-    });
-
-    const stats = {
-      hot: passUps.filter(p => p.disposition === 'HOT').length,
-      warm: passUps.filter(p => p.disposition === 'WARM').length,
-      int: passUps.filter(p => p.disposition === 'INT').length,
-      tihu: passUps.filter(p => p.disposition === 'TIHU').length,
-      wsmsnt: passUps.filter(p => p.disposition === 'WSMSNT').length,
-      total: passUps.length
-    };
-
-    const productive = stats.hot + stats.warm + stats.int;
-    const productiveGoal = period === 'daily' ? 8 : period === 'weekly' ? 40 : 100;
-    const totalGoal = period === 'daily' ? 10 : period === 'weekly' ? 50 : 120;
-
-    stats.targetProgress = {
-      productive,
-      productiveGoal,
-      totalGoal,
-      productivePercent: Math.round((productive / productiveGoal) * 100),
-      totalPercent: Math.round((stats.total / totalGoal) * 100)
-    };
-
-    res.json(stats);
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    res.status(500).json({ error: 'Failed to fetch stats' });
   }
 });
 
