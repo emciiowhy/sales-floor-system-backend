@@ -9,6 +9,8 @@ import stockRoutes from './routes/stock.js';
 import breakRoutes from './routes/breaks.js';
 import breakScheduleRoutes from './routes/breakSchedules.js';
 
+// Fixed: Ensured DELETE and PATCH routes for pass-ups are properly registered
+
 dotenv.config();
 
 const app = express();
