@@ -76,6 +76,94 @@ router.get('/agent/:agentId', async (req, res) => {
   }
 });
 
+// Delete pass-up
+router.delete('/:passUpId', async (req, res) => {
+  try {
+    const { passUpId } = req.params;
+    const { agentId } = req.query;
+
+    // Verify the pass-up belongs to the agent
+    const passUp = await prisma.passUp.findUnique({
+      where: { id: passUpId }
+    });
+
+    if (!passUp) {
+      return res.status(404).json({ error: 'Pass-up not found' });
+    }
+
+    if (passUp.agentId !== agentId) {
+      return res.status(403).json({ error: 'Unauthorized: Pass-up does not belong to this agent' });
+    }
+
+    await prisma.passUp.delete({
+      where: { id: passUpId }
+    });
+
+    res.json({ success: true, message: 'Pass-up deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting pass-up:', error);
+    res.status(500).json({ error: 'Failed to delete pass-up' });
+  }
+});
+
+// Update pass-up
+router.patch('/:passUpId', async (req, res) => {
+  try {
+    const { passUpId } = req.params;
+    const { agentId } = req.query;
+    const {
+      ticker,
+      leadName,
+      interestedIn,
+      agreedToSMS,
+      disposition,
+      rebuttals,
+      notes,
+      tickerPrice
+    } = req.body;
+
+    // Verify the pass-up belongs to the agent
+    const passUp = await prisma.passUp.findUnique({
+      where: { id: passUpId }
+    });
+
+    if (!passUp) {
+      return res.status(404).json({ error: 'Pass-up not found' });
+    }
+
+    if (passUp.agentId !== agentId) {
+      return res.status(403).json({ error: 'Unauthorized: Pass-up does not belong to this agent' });
+    }
+
+    // Validate disposition if provided
+    if (disposition !== undefined) {
+      const validDispositions = ['WSMSNT', 'TIHU', 'INT', 'WARM', 'HOT'];
+      if (!validDispositions.includes(disposition)) {
+        return res.status(400).json({ error: 'Invalid disposition' });
+      }
+    }
+
+    const updatedPassUp = await prisma.passUp.update({
+      where: { id: passUpId },
+      data: {
+        ...(ticker !== undefined && { ticker: ticker.toUpperCase() }),
+        ...(leadName !== undefined && { leadName }),
+        ...(interestedIn !== undefined && { interestedIn }),
+        ...(agreedToSMS !== undefined && { agreedToSMS }),
+        ...(disposition !== undefined && { disposition }),
+        ...(rebuttals !== undefined && { rebuttals }),
+        ...(notes !== undefined && { notes }),
+        ...(tickerPrice !== undefined && { tickerPrice })
+      }
+    });
+
+    res.json(updatedPassUp);
+  } catch (error) {
+    console.error('Error updating pass-up:', error);
+    res.status(500).json({ error: 'Failed to update pass-up' });
+  }
+});
+
 // Get agent stats
 router.get('/agent/:agentId/stats', async (req, res) => {
   try {
